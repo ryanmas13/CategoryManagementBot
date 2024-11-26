@@ -1,2 +1,10 @@
 streamlit
-openai
+#openai
+langchain
+ibm_watsonx_ai
+langchain_ibm
+langchain_chroma
+langchain-community
+langchain_core
+pymupdf
+faiss-cpu

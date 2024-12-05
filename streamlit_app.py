@@ -9,23 +9,7 @@ st.write(
 
 # Get credentials
 
-apikey = st.secrets.IBM.API_KEY
-url = st.secrets.IBM.URL
 
-from ibm_watsonx_ai import Credentials
-
-credentials = Credentials(
-    url = url,
-    api_key = apikey
-)
-
-try:
-    projectID = st.secrets.IBM.PROJECT_ID
-except KeyError:
-    projectID = st.text_input("Couldn't find project ID to run this project. Please contact the developer")
-
-from ibm_watsonx_ai import APIClient
-WatsonXAI = APIClient(credentials, projectID)
 
 # Split the provided document into chunks
 from langchain.text_splitter import CharacterTextSplitter
@@ -41,29 +25,7 @@ def split_text(file):
     return chunks
 
 # Setup the LLM
-from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
-from ibm_watsonx_ai.foundation_models.utils.enums import DecodingMethods
-from ibm_watsonx_ai.foundation_models.utils.enums import ModelTypes
-from langchain_ibm import WatsonxLLM
-
-def LLM():
-
-    model_id = ModelTypes.GRANITE_13B_CHAT_V2
-    
-    parameters = {
-        GenParams.DECODING_METHOD: DecodingMethods.GREEDY,
-        GenParams.MIN_NEW_TOKENS: 1,
-        GenParams.MAX_NEW_TOKENS: 100,
-        GenParams.STOP_SEQUENCES: ["<|endoftext|>"]
-    }
-    
-    watsonx_Granite = WatsonxLLM(
-    model_id=model_id.value,
-    url=credentials.get("url"),
-    apikey=credentials.get("apikey"),
-    project_id=projectID,
-    params=parameters
-)
+# Add code here to set up the IBM LLM or OpenAI LL
 
 # Define the prompt
 from langchain import hub
@@ -76,6 +38,7 @@ uploaded_pdf = st.file_uploader(
     "Upload a document (.pdf)", type=("pdf")
 )
 
+# For testing purposes, we will use a dummy pdf
 
     
 # Ask the user for a question via `st.text_area`.

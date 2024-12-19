@@ -1,6 +1,9 @@
 streamlit
-#openai
+openai
+llama-index
+nltk
 langchain
+llama-index-embeddings-langchain
 ibm_watsonx_ai
 langchain_ibm
 langchain_chroma

@@ -4,6 +4,7 @@ llama-index
 nltk
 langchain
 llama-index-embeddings-langchain
+sentence-transformers
 # ibm_watsonx_ai
 # langchain_ibm
 # langchain_chroma

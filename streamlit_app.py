@@ -3,8 +3,6 @@ import streamlit as st
 import streamlit as st
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.llms.openai import OpenAI
-import openai
-from llama_index import SimpleDirectoryReader
 
 # Show title and description.
 st.title("📄 Document question answering ")

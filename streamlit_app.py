@@ -31,11 +31,7 @@ Settings.embed_model = HuggingFaceBgeEmbeddings(model_name="BAAI/bge-base-en")
 #     model="text-embedding-3-small", embed_batch_size=100
 # )
 
-# Setup chat message history
-if "messages" not in st.session_state.keys(): # Initialize the chat message history
-    st.session_state.messages = [
-#         {"role": "assistant", "content": "Who are the parties involved in the contract?"},
-    ]
+
 
 
 # Load the data and create the index
@@ -55,23 +51,28 @@ index = loadData()
 if "chatEngine" not in st.session_state.keys(): # Initialize the chat engine
     st.session_state.chatEngine = index.as_chat_engine(chat_mode="openai", verbose=True)
 
+# Initialize chat message history
+if "messages" not in st.session_state.keys(): # Initialize the chat message history
+    st.session_state.messages = []
+#         {"role": "assistant", "content": "Who are the parties involved in the contract?"}
 
-
-# Prompt for user input and save to chat history
-if prompt := st.chat_input("Ask a question about the contract"): # Prompt for user input and save to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
+# Display chat messages from history
 if "messages" in st.session_state.keys():
     for message in st.session_state.messages: # Display the prior chat messages
         with st.chat_message(message["role"]):
             st.write(message["content"])
 
+# Prompt for user input and save to chat history
+if prompt := st.chat_input("Ask a question about the contract"): # Prompt for user input and save to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-    # If last message is not from assistant, generate a new response
-    if st.session_state.messages[-1]["role"] != "assistant":
-        with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                response = st.session_state.chatEngine.stream_chat(prompt)
-                st.write_stream(response.response_gen)
-                message = {"role": "assistant", "content": response.response}
-                st.session_state.messages.append(message) # Add response to message history
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            response = st.session_state.chatEngine.chat(prompt)
+            st.markdown(response.response)
+            message = {"role": "assistant", "content": response.response}
+            st.session_state.messages.append(message) # Add response to message history
+            print(st.session_state.messages)
+

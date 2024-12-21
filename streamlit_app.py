@@ -4,7 +4,7 @@ import pickle
 import streamlit as st
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, load_index_from_storage, StorageContext
 from llama_index.llms.openai import OpenAI
-from CustomDirectoryReader import CustomDirectoryReader
+
 
 global prompt, model, indexID, requiredExts
 

@@ -71,7 +71,9 @@ def createIndex(directory, flag):
 
 
 # Get the path to the directory and the index file
-directory = st.text_input("Enter directory path:")
+directory = "./data"
+if not (os.path.exists(directory)):
+    directory = st.text_input("Enter directory path:")
 if not os.path.isdir(directory):
     st.error("The provided directory path is invalid or is not a directory. Please enter a valid directory path.")
 else:

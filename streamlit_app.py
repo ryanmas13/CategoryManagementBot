@@ -51,21 +51,22 @@ def createIndex(directory, flag):
         docs = reader.load_data()
         files = reader.list_resources()
         if flag == "create":
-            index = VectorStoreIndex.from_documents(docs)
-            index.set_index_id(indexID)
-            index.storage_context.persist(directory)
+            with st.spinner("Creating index..."):
+                index = VectorStoreIndex.from_documents(docs)
+                index.set_index_id(indexID)
+                index.storage_context.persist(directory)
         elif flag == "load":
-            print(f"In Load setting")
-            try:
-                storage_context = StorageContext.from_defaults(persist_dir=directory)
-                print("storage context created")
-                index = load_index_from_storage(storage_context, index_id=indexID)
-            except:
-                print("Index not found. Creating a new one")
-                index, files = createIndex(directory, "create")
-            else:
-                refreshedDocs = index.refresh(docs)
-                print(f"Refreshed {sum(refreshedDocs)} documents")
+            with st.spinner(f"Loading index and files from {directory}..."):
+                try:
+                    storage_context = StorageContext.from_defaults(persist_dir=directory)
+                    print("storage context created")
+                    index = load_index_from_storage(storage_context, index_id=indexID)
+                except:
+                    print("Index not found. Please create a new one")
+                    index, files = createIndex(directory, "create")
+                else:
+                    refreshedDocs = index.refresh(docs)
+                    st.write(f"Refreshed {sum(refreshedDocs)} documents")
         return index, files
 
 
@@ -78,14 +79,16 @@ if not os.path.isdir(directory):
     st.error("The provided directory path is invalid or is not a directory. Please enter a valid directory path.")
 else:
     with st.spinner("Checking to see if contracts have been previously indexed..."):
-        index, files = createIndex(directory, "load")   
+        index, files = createIndex(directory, "load")
+    if not files:
+        index, files = createIndex(directory, "create")   
     if files:
         with st.sidebar:
             st.header("📄 Documents")
             # Diplay the list of documents
             for filePath in files:
                 st.write(os.path.basename(filePath))
-        st.header("💬 Chat with the Agent")
+        st.header("💬 Chat with the Contract Agent")
         # Set up the chat engine
         if "chatEngine" not in st.session_state.keys(): # Initialize the chat engine
             st.session_state.chatEngine = index.as_chat_engine(chat_mode="openai", verbose=True)
